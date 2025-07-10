@@ -4,6 +4,14 @@ const display = document.getElementById('display');
 //TRACK IF WE HAVE PERFOMED A CALCULATION
 let justCalculated = false;
 
+function isOperator(char) {
+    return ['+', '-', '*', '/'].includes(char);
+}
+
+function getLastChar() {
+    return display.value.slice(-1);
+}
+
 function appendToDisplay(value) {
     console.log('Button pressed: ', value);
 
@@ -15,19 +23,48 @@ function appendToDisplay(value) {
         return;
     }
 
-    //IF CURRENT DISPLAY SHOWS 0 AND USER ENTERS A NUMBER, WE WANT TO REPLACE THE 0
-    if (currentValue === "0" && !isNaN(value)) {
-        display.value = value;
-    } else if (currentValue === '0' && value == '.') {
+    if (justCalculated && isOperator(value)) {
         display.value = currentValue + value;
-    } else if (value === '.') {
-        //GET THE LAST NUMBER IN THE DISPLAY 
-        let lastNumber = currentValue.split('/[+\-*/]').pop();
-        //ONLY AT THE DECIMAL IF THE CURRENT NUMBER DOESNT HAVE ONT
-        if (!lastNumber.includes('.')) {
-            display.value = currentValue + value
+        justCalculated = false;
+        return;
+    }
+
+    //HANDLES OPERATORS
+    if (isOperator(value)) {
+        //DONT ALLOW OPERATOR AS FIRST CHAR(EXCEPTION FOR MINUS)
+        if (currentValue === '0' && value !== '-') {
+            return; // DO NOTHING   
         }
 
+        //IF THE LAST CHARACTER IS ALREADY AN OPERATOR, REPLACE IT
+        if (isOperator(getLastChar())) {
+            display.value = currentValue.slice(0, -1) + value;
+        } else {
+            display.value = currentValue + value;
+        }
+
+    } else if (!isNaN(value)) {
+        
+        if (currentValue === '0') {
+           display.value = value; 
+        } else {
+           display.value =  currentValue + value;
+        }
+
+    } else if (value === '0' && value == '.') {
+        
+        if (currentValue === '0') {
+            display.value = currentValueValue + value;
+        } else {
+            //GET THE LAST NUMBER IN THE DISPLAY (AFTER THE OPERATOR)
+            let parts = currentValue.split('/[+\-*/');
+            let lastNumber = parts[parts.length - 1];
+
+            //ONLY ADD DECIMAL IF NUMBER DOESNT ALREADY HAVE ONE
+            if (!lastNumber.includes('.')) {
+                display.value = currentValue + value;
+            }
+        }
     } else {
         display.value = currentValue + value;
     }
