@@ -18,11 +18,16 @@ function appendToDisplay(value) {
     //IF CURRENT DISPLAY SHOWS 0 AND USER ENTERS A NUMBER, WE WANT TO REPLACE THE 0
     if (currentValue === "0" && !isNaN(value)) {
         display.value = value;
-    }
-    
-    //IF THE CURRENT DISPLAY SHOWS 0 AND THE USER ENTERS DECIMAL, WE WANT TO KEEP 0
-    else if (currentValue === '0' && value == '.') {
+    } else if (currentValue === '0' && value == '.') {
         display.value = currentValue + value;
+    } else if (value === '.') {
+        //GET THE LAST NUMBER IN THE DISPLAY 
+        let lastNumber = currentValue.split('/[+\-*/]').pop();
+        //ONLY AT THE DECIMAL IF THE CURRENT NUMBER DOESNT HAVE ONT
+        if (!lastNumber.includes('.')) {
+            display.value = currentValue + value
+        }
+
     } else {
         display.value = currentValue + value;
     }
@@ -36,7 +41,14 @@ function appendToDisplay(value) {
 function clearDisplay() {
     console.log('Clear button pressed.');
 
-    alert('Clear button was Clicked');
+    display.value = '0';
+    justCalculated = false;
+
+    display.style.backgroundColor = '#f0f0f0';
+    setTimeout(() => {
+        display.style.backgroundColor = '';
+    }, 150);
+
 }
 
 function deleteLast() {
@@ -50,8 +62,6 @@ function deleteLast() {
     } else {
         display.value = currentValue.slice(0, -1);
     }
-
-    alert('Backspace button was clicked');
 }
 
 function calculate() {
@@ -60,9 +70,36 @@ function calculate() {
     alert('Equals button was clicked');
 }
 
+document.addEventListener('keydown', function(event) {
+    console.log('key pressed', event.key);
+
+    if (event.key >= '0' && event.key <= '9') {
+        appendToDisplay(event.key);
+    } else if (event.key === '.') {
+        appendToDisplay('.')
+    } else if (event.key === '+') {
+        appendToDisplay('+')
+    } else if (event.key === '-') {
+        appendToDisplay('-')
+    } else if (event.key === '*') {
+        appendToDisplay('*')
+    } else if (event.key === '/') {
+        event.preventDefault();
+        appendToDisplay('/')
+    }
+
+     else if (event.key === 'Enter' || event.key === '=') {
+        calculate();
+    } else if (event.key === 'Escape' || event.key === 'c' || event.key === 'C') {
+       clearDisplay();
+    } else if (event.key === 'Backspace') {
+        deleteLast();
+    }
+})
+
 document.addEventListener('DOMContentLoaded', function(){
     console.log('Calculator loaded successfully');
-    console.log('Display  elemt', display);
+    console.log('Display  element', display);
 
     if (display) {
         console.log('Current display value: ', display.value);
