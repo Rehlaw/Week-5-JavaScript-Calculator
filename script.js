@@ -15,10 +15,10 @@ function getLastChar() {
 function safeEval(expression) {
     try {
         let jsExpression = expression
-        .replace(/×/g, '*')
-        .replace(/÷/g,'/');
+            .replace(/x/g, '*')
+            .replace(/÷/g, '/');
 
-        if (!/^[0-9+\-*/.()]+$/.test(jsExpression)){
+        if (!/^[0-9+\-*/.() ]+$/.test(jsExpression)){
             throw new Error('Invalid characters in expression');
         }
 
@@ -74,10 +74,10 @@ function appendToDisplay(value) {
            display.value =  currentValue + value;
         }
 
-    } else if (value === '0' && value == '.') {
+    } else if (value === '.') {
         
         if (currentValue === '0') {
-            display.value = currentValueValue + value;
+            display.value = currentValue + value;
         } else {
             //GET THE LAST NUMBER IN THE DISPLAY (AFTER THE OPERATOR)
             let parts = currentValue.split('/[+\-*/');
@@ -117,7 +117,7 @@ function deleteLast() {
     let currentValue = display.value;
 
     //IF THERES ONLY ONE CHARACTER OR ITS 0,RESET TO 0
-    if (currentValue.length <= 1 || currentValue == '0') {
+    if (currentValue.length <= 1 || currentValue === '0') {
         display.value = '0';
     } else {
         display.value = currentValue.slice(0, -1);
@@ -145,7 +145,7 @@ function calculate() {
             clearDisplay()
         }, 2000);
     } else {
-        if (Number.isInterger(result)) {
+        if (Number.isInteger(result)) {
             display.value = result.toString();
         } else {
             display.value = parseFloat(result.toFixed(10)).toString();
@@ -155,27 +155,27 @@ function calculate() {
     }
 
     display.style.backgroundColor = '#e8f5e8';
-    setTimeout(()=> {
+    setTimeout(() => {
         display.style.backgroundColor = '';
     }, 300);
 }
 
 document.addEventListener('keydown', function(event) {
-    console.log('key pressed', event.key);
+    console.log('Key pressed', event.key);
 
     if (event.key >= '0' && event.key <= '9') {
         appendToDisplay(event.key);
     } else if (event.key === '.') {
-        appendToDisplay('.')
+        appendToDisplay('.');
     } else if (event.key === '+') {
-        appendToDisplay('+')
+        appendToDisplay('+');
     } else if (event.key === '-') {
-        appendToDisplay('-')
+        appendToDisplay('-');
     } else if (event.key === '*') {
-        appendToDisplay('*')
+        appendToDisplay('*');
     } else if (event.key === '/') {
         event.preventDefault();
-        appendToDisplay('/')
+        appendToDisplay('/');
     }
 
      else if (event.key === 'Enter' || event.key === '=') {
